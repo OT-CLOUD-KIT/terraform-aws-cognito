@@ -146,35 +146,35 @@ resource "aws_cognito_user_pool_domain" "domain" {
 
 
 #===============================================================================
-lambda_function
-resource "aws_lambda_function" "cognito_lambda" {
-  count = length(var.lambda_functions)
+# lambda_function
+#resource "aws_lambda_function" "cognito_lambda" {                    
+#  count = length(var.lambda_functions)
+#
+#  filename      = var.lambda_functions[count.index].filename
+#  function_name = "${var.env_name}-${var.lambda_functions[count.index].function_name}"
+#  role          = var.lambda_functions[count.index].role
+#  handler       = var.lambda_functions[count.index].handler
+#  runtime       = var.lambda_functions[count.index].runtime
+#
+#  environment {
+#    variables = var.lambda_functions[count.index].environment
+#  }
+#
+#  # Nested block to define permission within the lambda function resource
+#  provisioner "local-exec" {
+#    command = "sleep 5"
+#    interpreter = ["bash", "-c"]
+#  }
+#}
 
-  filename      = var.lambda_functions[count.index].filename
-  function_name = "${var.env_name}-byoe-${var.lambda_functions[count.index].function_name}"
-  role          = var.lambda_functions[count.index].role
-  handler       = var.lambda_functions[count.index].handler
-  runtime       = var.lambda_functions[count.index].runtime
-
-  environment {
-    variables = var.lambda_functions[count.index].environment
-  }
-
-  # Nested block to define permission within the lambda function resource
-  provisioner "local-exec" {
-    command = "sleep 5"
-    interpreter = ["bash", "-c"]
-  }
-}
-
-resource "aws_lambda_permission" "cognito_lambda_permission" {
-  for_each      = var.module_enabled ? { for i, func in aws_lambda_function.cognito_lambda : i => func.function_name } : {}
-  statement_id  = "AllowExecutionFromCognito"
-  action        = "lambda:InvokeFunction"
-  function_name = each.value
-  principal     = "cognito-idp.amazonaws.com"
-  source_arn    = var.module_enabled ? aws_cognito_user_pool.user_pool[0].arn : null 
-}
+#resource "aws_lambda_permission" "cognito_lambda_permission" {
+#  for_each      = var.module_enabled ? { for i, func in aws_lambda_function.cognito_lambda : i => func.function_name } : {}
+#  statement_id  = "AllowExecutionFromCognito"
+#  action        = "lambda:InvokeFunction"
+#  function_name = each.value
+#  principal     = "cognito-idp.amazonaws.com"
+#  source_arn    = var.module_enabled ? aws_cognito_user_pool.user_pool[0].arn : null 
+#}
 
 
 
